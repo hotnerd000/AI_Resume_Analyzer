@@ -124,7 +124,9 @@ def home():
                 let raw = data.result;
 
                 // 🔹 Remove markdown code block (```json ... ```)
-                raw = raw.replace(/```json\n?/g, "").replace(/```/g, "");
+                raw = raw.replaceAll("```json", "")
+                        .replaceAll("```", "")
+                        .trim();
 
                 // 🔹 Trim spaces/newlines
                 raw = raw.trim();

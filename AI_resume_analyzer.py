@@ -4,6 +4,9 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 from fastapi.responses import HTMLResponse
+from fastapi import UploadFile, File, Form
+import PyPDF2
+import io
 
 # Load environment variables
 load_dotenv()
@@ -108,3 +111,34 @@ def home():
     </body>
     </html>
     """
+
+@app.post("/analyze-file")
+async def analyze_file(
+    file: UploadFile = File(...),
+    job_description: str = Form(...)
+):
+    contents = await file.read()
+    pdf_reader = PyPDF2.PdfReader(io.BytesIO(contents))
+
+    resume_text = ""
+    for page in pdf_reader.pages:
+        resume_text += page.extract_text() or ""
+
+    # reuse your prompt here
+    prompt = f"""
+    You are an expert HR recruiter...
+
+    Resume:
+    {resume_text}
+
+    Job Description:
+    {job_description}
+    """
+
+    response = client.chat.completions.create(
+        model="openai/gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3
+    )
+
+    return {"result": response.choices[0].message.content}

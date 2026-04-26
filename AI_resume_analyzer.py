@@ -87,7 +87,7 @@ def home():
     </head>
 
     <body style="font-family: Arial; max-width: 800px; margin: auto;">
-        <h2>AI Resume Analyzer</h2>
+        <h2 style="margin-top: 60px; text-align: center;">AI Resume Analyzer</h2>
 
         <p><strong>Upload Resume (PDF):</strong></p>
         <input type="file" id="file"><br><br>

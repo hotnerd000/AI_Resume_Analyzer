@@ -81,27 +81,25 @@ def home():
         <title>AI Resume Analyzer</title>
     </head>
     <body style="font-family: Arial; max-width: 800px; margin: auto;">
-        <h2>AI Resume Analyzer</h2>
-
-        <textarea id="resume" placeholder="Paste Resume" rows="10" style="width:100%"></textarea><br><br>
+        <input type="file" id="file"><br><br>
         <textarea id="job" placeholder="Paste Job Description" rows="10" style="width:100%"></textarea><br><br>
 
-        <button onclick="analyze()">Analyze</button>
+        <button onclick="upload()">Analyze PDF</button>
 
         <pre id="result"></pre>
 
         <script>
-        async function analyze() {
-            const resume = document.getElementById("resume").value;
+        async function upload() {
+            const file = document.getElementById("file").files[0];
             const job = document.getElementById("job").value;
 
-            const res = await fetch("/analyze", {
+            let formData = new FormData();
+            formData.append("file", file);
+            formData.append("job_description", job);
+
+            const res = await fetch("/analyze-file", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    resume: resume,
-                    job_description: job
-                })
+                body: formData
             });
 
             const data = await res.json();

@@ -8,7 +8,7 @@ It provides a fit score, insights, and actionable recommendations using modern L
 
 ## 🚀 Live Demo
 
-👉 https://your-app.up.railway.app
+👉 https://airesumeanalyzer-production-ba95.up.railway.app/
 
 ---
 
@@ -48,13 +48,19 @@ It provides a fit score, insights, and actionable recommendations using modern L
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-2. Create virtual environment
+git clone https://github.com/hotnerd000/AI_Resume_Analyzer.git
+cd AI_Resume_Analyzer
+
+### 2. Create virtual environment
+
+```bash
 python -m venv venv
 venv\Scripts\activate
-3. Install dependencies
+
+### 3. Install dependencies
+
 pip install -r requirements.txt
+
 4. Create .env file
 OPENROUTER_API_KEY=your_api_key_here
 5. Run the application
@@ -110,32 +116,11 @@ History tracking
 Job seekers optimizing resumes
 Recruiters evaluating candidates
 Career platforms integrating AI insights
+
 🧑‍💻 Author
 
-Built by [Your Name]
+Built by [Hotnerd000]
 
 ⭐ If you like this project
 
 Give it a star ⭐ and feel free to contribute!
-
-
----
-
-# 💡 Next step (important)
-
-After adding this:
-
-1. Replace:
-   - `your-app.up.railway.app`
-   - `your-username`
-   - `your-repo`
-
-2. Push to GitHub
-
-👉 This instantly makes your project look **client-ready**
-
----
-
-If you want, I can also:
-- :contentReference[oaicite:0]{index=0}
-- Or :contentReference[oaicite:1]{index=1}

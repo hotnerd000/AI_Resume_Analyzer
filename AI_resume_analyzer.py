@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse
 from fastapi import UploadFile, File, Form
 import PyPDF2
 import io
+import traceback
 
 # Load environment variables
 load_dotenv()

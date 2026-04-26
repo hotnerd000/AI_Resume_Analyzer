@@ -31,8 +31,8 @@ class RequestData(BaseModel):
 @app.post("/analyze")
 
 def analyze(data: RequestData):
-
-    prompt = f"""
+    try:
+        prompt = f"""
 You are an expert HR recruiter.
 
 Task:
@@ -60,18 +60,22 @@ Resume:
 Job Description:
 {data.job_description}
 """
+        response = client.chat.completions.create(
+            model="google/gemma-3-4b-it:free",
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3
+        )
 
-    response = client.chat.completions.create(
-        model="openai/gpt-4o-mini",
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.3
-    )
+        return {
+            "result": response.choices[0].message.content
+        }
 
-    return {
-        "result": response.choices[0].message.content
-    }
+    except Exception as e:
+        print("ERROR:", str(e))
+        traceback.print_exc()
+        return {"error": str(e)}
 
 @app.get("/", response_class=HTMLResponse)
 def home():
@@ -81,6 +85,8 @@ def home():
         <title>AI Resume Analyzer</title>
     </head>
     <body style="font-family: Arial; max-width: 800px; margin: auto;">
+        <h2>AI Resume Analyzer</h2>
+        
         <input type="file" id="file"><br><br>
         <textarea id="job" placeholder="Paste Job Description" rows="10" style="width:100%"></textarea><br><br>
 

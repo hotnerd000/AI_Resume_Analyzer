@@ -121,7 +121,23 @@ def home():
             const data = await res.json();
 
             try {
-                const result = JSON.parse(data.result);
+                let raw = data.result;
+
+                // 🔹 Remove markdown code block (```json ... ```)
+                raw = raw.replace(/```json\n?/g, "").replace(/```/g, "");
+
+                // 🔹 Trim spaces/newlines
+                raw = raw.trim();
+
+                let result;
+
+                try {
+                    result = JSON.parse(raw);
+                } catch (e) {
+                    console.error("JSON parse error:", e);
+                    document.getElementById("result").innerText = data.result;
+                    return;
+                }
 
                 const color =
                     result.fit_score >= 7 ? "green" :

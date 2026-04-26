@@ -79,40 +79,66 @@ Job Description:
         return {"error": str(e)}
 
 @app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 def home():
     return """
     <html>
     <head>
         <title>AI Resume Analyzer</title>
     </head>
+
     <body style="font-family: Arial; max-width: 800px; margin: auto;">
         <h2>AI Resume Analyzer</h2>
-        
-        <input type="file" id="file"><br><br>
+
+        <textarea id="resume" placeholder="Paste Resume" rows="10" style="width:100%"></textarea><br><br>
         <textarea id="job" placeholder="Paste Job Description" rows="10" style="width:100%"></textarea><br><br>
 
-        <button onclick="upload()">Analyze PDF</button>
+        <button onclick="analyze()">Analyze</button>
 
-        <pre id="result"></pre>
+        <div id="result" style="background:#f5f5f5; padding:15px; margin-top:20px;"></div>
 
         <script>
-        async function upload() {
-            const file = document.getElementById("file").files[0];
+        async function analyze() {
+            const resume = document.getElementById("resume").value;
             const job = document.getElementById("job").value;
 
-            let formData = new FormData();
-            formData.append("file", file);
-            formData.append("job_description", job);
-
-            const res = await fetch("/analyze-file", {
+            const res = await fetch("/analyze", {
                 method: "POST",
-                body: formData
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    resume: resume,
+                    job_description: job
+                })
             });
 
             const data = await res.json();
-            document.getElementById("result").innerText = data.result;
+
+            try {
+                const result = JSON.parse(data.result);
+
+                const color =
+                    result.fit_score >= 7 ? "green" :
+                    result.fit_score >= 4 ? "orange" : "red";
+
+                document.getElementById("result").innerHTML = `
+                    <h3 style="color:${color}">Fit Score: ${result.fit_score} / 10</h3>
+                    <p><strong>Reason:</strong> ${result.reason}</p>
+
+                    <h4>Strengths:</h4>
+                    <ul>${result.strengths.map(s => `<li>${s}</li>`).join("")}</ul>
+
+                    <h4>Missing Skills:</h4>
+                    <ul>${result.missing_skills.map(s => `<li>${s}</li>`).join("")}</ul>
+
+                    <h4>Improvements:</h4>
+                    <ul>${result.improvements.map(s => `<li>${s}</li>`).join("")}</ul>
+                `;
+            } catch (e) {
+                document.getElementById("result").innerText = data.result;
+            }
         }
         </script>
+
     </body>
     </html>
     """
@@ -140,7 +166,27 @@ async def analyze_file(
             return {"error": "Could not extract text from PDF"}
 
         prompt = f"""
-Return ONLY valid JSON.
+You are an expert recruiter.
+
+Evaluate how well the resume matches the job description.
+
+Return ONLY valid JSON in this format:
+
+{{
+  "fit_score": number (0-10),
+  "reason": "",
+  "missing_skills": [],
+  "strengths": [],
+  "improvements": []
+}}
+
+Scoring rules:
+- 0-3 = poor match
+- 4-6 = moderate match
+- 7-8 = good match
+- 9-10 = excellent match
+
+Be strict and realistic.
 
 Resume:
 {resume_text}

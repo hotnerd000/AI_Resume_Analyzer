@@ -121,28 +121,41 @@ async def analyze_file(
     file: UploadFile = File(...),
     job_description: str = Form(...)
 ):
-    contents = await file.read()
-    pdf_reader = PyPDF2.PdfReader(io.BytesIO(contents))
+    try:
+        contents = await file.read()
 
-    resume_text = ""
-    for page in pdf_reader.pages:
-        resume_text += page.extract_text() or ""
+        if not contents:
+            return {"error": "Empty file"}
 
-    # reuse your prompt here
-    prompt = f"""
-    You are an expert HR recruiter...
+        pdf_reader = PyPDF2.PdfReader(io.BytesIO(contents))
 
-    Resume:
-    {resume_text}
+        resume_text = ""
+        for page in pdf_reader.pages:
+            text = page.extract_text()
+            if text:
+                resume_text += text
 
-    Job Description:
-    {job_description}
-    """
+        if not resume_text.strip():
+            return {"error": "Could not extract text from PDF"}
 
-    response = client.chat.completions.create(
-        model="openai/gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3
-    )
+        prompt = f"""
+Return ONLY valid JSON.
 
-    return {"result": response.choices[0].message.content}
+Resume:
+{resume_text}
+
+Job Description:
+{job_description}
+"""
+
+        response = client.chat.completions.create(
+            model="google/gemma-3-4b-it:free",
+            messages=[{"role": "user", "content": prompt}],
+        )
+
+        return {"result": response.choices[0].message.content}
+
+    except Exception as e:
+        print("ERROR:", str(e))
+        traceback.print_exc()
+        return {"error": str(e)}

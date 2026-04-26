@@ -79,7 +79,6 @@ Job Description:
         return {"error": str(e)}
 
 @app.get("/", response_class=HTMLResponse)
-@app.get("/", response_class=HTMLResponse)
 def home():
     return """
     <html>
@@ -90,25 +89,33 @@ def home():
     <body style="font-family: Arial; max-width: 800px; margin: auto;">
         <h2>AI Resume Analyzer</h2>
 
-        <textarea id="resume" placeholder="Paste Resume" rows="10" style="width:100%"></textarea><br><br>
-        <textarea id="job" placeholder="Paste Job Description" rows="10" style="width:100%"></textarea><br><br>
+        <p><strong>Upload Resume (PDF):</strong></p>
+        <input type="file" id="file"><br><br>
 
-        <button onclick="analyze()">Analyze</button>
+        <p><strong>Paste Job Description:</strong></p>
+        <textarea id="job" rows="10" style="width:100%"></textarea><br><br>
+
+        <button onclick="upload()">Analyze</button>
 
         <div id="result" style="background:#f5f5f5; padding:15px; margin-top:20px;"></div>
 
         <script>
-        async function analyze() {
-            const resume = document.getElementById("resume").value;
+        async function upload() {
+            const file = document.getElementById("file").files[0];
             const job = document.getElementById("job").value;
 
-            const res = await fetch("/analyze", {
+            if (!file) {
+                alert("Please upload a PDF resume");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", file);
+            formData.append("job_description", job);
+
+            const res = await fetch("/analyze-file", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    resume: resume,
-                    job_description: job
-                })
+                body: formData
             });
 
             const data = await res.json();

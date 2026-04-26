@@ -1,4 +1,3 @@
-AI Resume Analyzer — README
 # 🧠 AI Resume Analyzer
 
 An AI-powered web application that evaluates how well a resume matches a job description.  
@@ -50,51 +49,86 @@ It provides a fit score, insights, and actionable recommendations using modern L
 ```bash
 git clone https://github.com/hotnerd000/AI_Resume_Analyzer.git
 cd AI_Resume_Analyzer
+```
 
-### 2. Create virtual environment
+### 2. Create a virtual environment
 
 ```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
 ### 3. Install dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
-4. Create .env file
+### 4. Create `.env` file
+
+Create a file named `.env` in the root directory and add:
+
+```env
 OPENROUTER_API_KEY=your_api_key_here
-5. Run the application
+```
+
+### 5. Run the application
+
+```bash
 uvicorn main:app --reload
-6. Open in browser
+```
+
+### 6. Open in browser
+
+```text
 http://127.0.0.1:8000
-🌐 Deployment
+```
+
+---
+
+## 🌐 Deployment
 
 The app is deployed using Railway.
 
-Steps:
-Push code to GitHub
-Connect repo to Railway
-Add environment variable:
-OPENROUTER_API_KEY
-Generate domain in Railway Networking tab
-📊 API Endpoints
-Analyze Resume (PDF)
+### Steps:
+- Push code to GitHub  
+- Connect repo to Railway  
+- Add environment variable:  
+  `OPENROUTER_API_KEY`  
+- Generate domain in Railway Networking tab  
+
+---
+
+## 📊 API Endpoints
+
+### Analyze Resume (PDF)
+
 POST /analyze-file
 
-Form Data:
+**Form Data:**
+- `file` → PDF resume  
+- `job_description` → text  
 
-file → PDF resume
-job_description → text
-Analyze Resume (Text)
+---
+
+### Analyze Resume (Text)
+
 POST /analyze
 
-JSON Body:
+**JSON Body:**
 
+```json
 {
   "resume": "text",
   "job_description": "text"
 }
-🧩 Example Output
+```
+
+---
+
+## 🧩 Example Output
+
+```json
 {
   "fit_score": 7,
   "reason": "Strong frontend experience but missing system design exposure.",
@@ -102,25 +136,42 @@ JSON Body:
   "strengths": ["HTML, CSS, JavaScript", "Performance optimization"],
   "improvements": ["Add backend experience", "Include scalable architecture projects"]
 }
-⚠️ Known Limitations
-PDF text extraction may fail for scanned documents
-AI output may require validation for strict JSON formatting
-Free models may produce inconsistent results
-🔮 Future Improvements
-DOCX file support
-ATS-style keyword scoring
-Downloadable PDF report
-Authentication system
-History tracking
-💼 Use Cases
-Job seekers optimizing resumes
-Recruiters evaluating candidates
-Career platforms integrating AI insights
+```
 
-🧑‍💻 Author
+---
 
-Built by [Hotnerd000]
+## ⚠️ Known Limitations
 
-⭐ If you like this project
+- PDF text extraction may fail for scanned documents  
+- AI output may require validation for strict JSON formatting  
+- Free models may produce inconsistent results  
+
+---
+
+## 🔮 Future Improvements
+
+- DOCX file support  
+- ATS-style keyword scoring  
+- Downloadable PDF report  
+- Authentication system  
+- History tracking  
+
+---
+
+## 💼 Use Cases
+
+- Job seekers optimizing resumes  
+- Recruiters evaluating candidates  
+- Career platforms integrating AI insights  
+
+---
+
+## 🧑‍💻 Author
+
+Built Hotnerd000
+
+---
+
+## ⭐ If you like this project
 
 Give it a star ⭐ and feel free to contribute!
